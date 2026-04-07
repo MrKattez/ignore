@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
 <meta charset="UTF-8">
 <title>Diaper Terminal</title>
 <style>
@@ -17,80 +20,24 @@ html, body { margin:0; padding:0; width:100%; height:100%; background:#000; font
 .heart { position:absolute; right:5px; top:-2px; color:#ff4444; display:inline-block; transform-origin:center center; animation:pulse 1s infinite alternate; }
 .soiledPage pre { font-size:18px; line-height:20px; }
 .soiledPage iframe { margin-top:20px; border:none; }
-html, body {
-  margin:0;
-  padding:0;
-  width:100%;
-  height:100%;
-  background:#000;
-  font-family:monospace;
-  color:#ffee00;
-}
-
-.terminal, .soiledPage {
-  width:100%;
-  height:100%;
-  box-sizing:border-box;
-  padding:20px;
-}
-
-.cursor {
-  display:inline-block;
-  width:8px;
-  height:14px;
-  background:#ffee00;
-  animation:blink 1s steps(1) infinite;
-}
-
-@keyframes blink {
-  0%,100%{opacity:1}
-  50%{opacity:0}
-}
-
-.soiledPage {
-  display:none;
-  text-align:center;
-  background:#000;
-  color:#ff4444;
-}
-
-.soiledPage iframe {
-  width:80%;
-  height:60%;
-  margin-top:20px;
-  border:none;
-}
 </style>
 </head>
 <body>
-
 <div id="terminal" class="terminal"></div>
 
 <div id="soiled" class="soiledPage" style="display:none; background:#000; color:#ff4444;">
   <pre>soiled</pre>
   <iframe id="ytPlayer" width="560" height="315" src="" allow="autoplay" allowfullscreen></iframe>
-<div id="soiled" class="soiledPage">
-  <h1>soiled</h1>
-  <iframe id="ytPlayer"
-    src=""
-    allow="autoplay; encrypted-media; fullscreen"
-    allowfullscreen>
-  </iframe>
 </div>
 
 <script>
 const terminal = document.getElementById('terminal');
 const soiledPage = document.getElementById('soiled');
-const ytPlayer = document.getElementById('ytPlayer');
 
 let lines=[], showWindow=false, ageGate=true, blocked=false;
 let systemOn=false, hypno=false, shockActive=false, progress=0, cumPulse=false;
 let vibratorEnabled=false, showClimax=false, enteredSoiled=false;
-let progress = 0;
-let systemOn = false;
-let enteredSoiled = false;
 
-// Boot lines
 const bootLines = [
   "booting executable: diaper.top",
   "initializing system...",
@@ -194,32 +141,11 @@ function renderTerminal(){
         const climax=document.createElement('div'); climax.style.color='#ff0000'; climax.style.marginTop='10px';
         climax.style.fontSize='14px'; climax.textContent='Climax achieved!';
         content.appendChild(climax);
-  if(i < bootLines.length){
-    const div = document.createElement('div');
-    div.textContent = "> " + bootLines[i++];
-    terminal.appendChild(div);
-  } else {
-    clearInterval(bootInterval);
-    setTimeout(()=>{ systemOn=true; startProgress(); }, 500);
-  }
-}, 400);
-
-// Progress simulation
-function startProgress(){
-  const progInterval = setInterval(()=>{
-    if(systemOn && !enteredSoiled){
-      progress += 5;
-      if(progress >= 100){
-        progress = 100;
-        systemOn=false;
-        enterSoiled();
-        clearInterval(progInterval);
       }
     }
 
     win.appendChild(content); terminal.appendChild(win);
   }
-  }, 500);
 }
 
 // System toggle
@@ -233,18 +159,12 @@ function handleSystemToggle(){
       enteredSoiled=true;
       terminal.style.display='none';
       soiledPage.style.display='block';
-// Show soiled page + video
-function enterSoiled(){
-  enteredSoiled = true;
-  terminal.style.display = "none";
-  soiledPage.style.display = "block";
 
       // Play YouTube video automatically
       const yt = document.getElementById('ytPlayer');
       yt.src = "https://www.youtube.com/embed/p7wtblI5Tts?autoplay=1&mute=1&controls=0";
     },500);
   }
-  ytPlayer.src = "https://www.youtube-nocookie.com/embed/p7wtblI5Tts?autoplay=1&controls=1";
 }
 
 // Progress auto-increment
@@ -263,6 +183,7 @@ setInterval(()=>{
 },500);
 
 </script>
-
+</body>
+</html>
 </body>
 </html>
