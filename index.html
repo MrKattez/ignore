@@ -36,6 +36,7 @@ html, body {
 
 .soiledPage {
   display:none;
+  position:relative;
   text-align:center;
   background:#000;
   color:#ff4444;
@@ -44,8 +45,27 @@ html, body {
 .soiledPage iframe {
   width:80%;
   height:60%;
-  margin-top:20px;
   border:none;
+  margin-top:20px;
+}
+
+#unmuteBtn {
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  padding:20px 40px;
+  font-size:24px;
+  background:#ffee00;
+  color:#000;
+  border:none;
+  cursor:pointer;
+  border-radius:10px;
+  box-shadow:0 0 20px rgba(255,255,0,0.5);
+  z-index:10;
+}
+#unmuteBtn:hover {
+  background:#ffdd00;
 }
 </style>
 </head>
@@ -60,12 +80,14 @@ html, body {
     allow="autoplay; encrypted-media; fullscreen"
     allowfullscreen>
   </iframe>
+  <button id="unmuteBtn">Turn On Audio</button>
 </div>
 
 <script>
 const terminal = document.getElementById('terminal');
 const soiledPage = document.getElementById('soiled');
 const ytPlayer = document.getElementById('ytPlayer');
+const unmuteBtn = document.getElementById('unmuteBtn');
 
 let progress = 0;
 let systemOn = false;
@@ -112,7 +134,17 @@ function enterSoiled(){
   terminal.style.display = "none";
   soiledPage.style.display = "block";
 
-  ytPlayer.src = "https://www.youtube-nocookie.com/embed/p7wtblI5Tts?autoplay=1&controls=1";
+  ytPlayer.src = "https://www.youtube-nocookie.com/embed/p7wtblI5Tts?autoplay=1&controls=1&mute=1";
+
+  // Show unmute button
+  unmuteBtn.style.display = "block";
+}
+
+// Unmute video when button clicked
+unmuteBtn.onclick = () => {
+  // Replace iframe src with same URL but autoplay unmuted
+  ytPlayer.src = "https://www.youtube-nocookie.com/embed/p7wtblI5Tts?autoplay=1&controls=1&mute=0";
+  unmuteBtn.style.display = "none";
 }
 </script>
 
