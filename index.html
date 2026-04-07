@@ -19,15 +19,17 @@ html, body { margin:0; padding:0; width:100%; height:100%; background:#000; font
 .progress-bar { height:100%; background: linear-gradient(90deg,#ff4444,#ffee00); transition: width 0.2s ease; }
 .heart { position:absolute; right:5px; top:-2px; color:#ff4444; display:inline-block; transform-origin:center center; animation:pulse 1s infinite alternate; }
 .soiledPage pre { font-size:18px; line-height:20px; }
+.soiledPage iframe { margin-top:20px; border:none; }
 </style>
 </head>
 <body>
 <div id="terminal" class="terminal"></div>
+
 <div id="soiled" class="soiledPage" style="display:none; background:#000; color:#ff4444;">
-<pre>
-soiled
-</pre>
+  <pre>soiled</pre>
+  <iframe id="ytPlayer" width="560" height="315" src="" allow="autoplay" allowfullscreen></iframe>
 </div>
+
 <script>
 const terminal = document.getElementById('terminal');
 const soiledPage = document.getElementById('soiled');
@@ -157,6 +159,10 @@ function handleSystemToggle(){
       enteredSoiled=true;
       terminal.style.display='none';
       soiledPage.style.display='block';
+
+// Play YouTube video automatically (unmuted)
+const yt = document.getElementById('ytPlayer');
+yt.src = "https://www.youtube.com/embed/p7wtblI5Tts?autoplay=1&controls=0";
     },500);
   }
 }
