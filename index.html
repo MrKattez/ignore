@@ -19,7 +19,8 @@ html, body { margin:0; padding:0; width:100%; height:100%; background:#000; font
 .progress-bar { height:100%; background: linear-gradient(90deg,#ff4444,#ffee00); transition: width 0.2s ease; }
 .heart { position:absolute; right:5px; top:-2px; color:#ff4444; display:inline-block; transform-origin:center center; animation:pulse 1s infinite alternate; }
 .soiledPage pre { font-size:18px; line-height:20px; }
-.soiledPage iframe { margin-top:20px; border:none; }
+.soiledPage iframe { margin-top:20px; border:none; display:none; }
+#playBtn { display:block; margin-top:20px; padding:10px 20px; font-size:16px; cursor:pointer; background:#ffee00; color:#000; border:none; }
 </style>
 </head>
 <body>
@@ -28,18 +29,15 @@ html, body { margin:0; padding:0; width:100%; height:100%; background:#000; font
 
 <div id="soiled" class="soiledPage" style="display:none; background:#000; color:#ff4444;">
   <pre>soiled</pre>
-  <iframe id="ytPlayer"
-          width="560"
-          height="315"
-          src=""
-          allow="autoplay; encrypted-media"
-          allowfullscreen>
-  </iframe>
+  <button id="playBtn">Play Video</button>
+  <iframe id="ytPlayer" width="560" height="315" src="" allow="autoplay; encrypted-media" allowfullscreen></iframe>
 </div>
 
 <script>
 const terminal = document.getElementById('terminal');
 const soiledPage = document.getElementById('soiled');
+const playBtn = document.getElementById('playBtn');
+const ytPlayer = document.getElementById('ytPlayer');
 
 let lines=[], showWindow=false, ageGate=true, blocked=false;
 let systemOn=false, hypno=false, shockActive=false, progress=0, cumPulse=false;
@@ -72,7 +70,6 @@ function renderTerminal(){
   if(enteredSoiled) return;
   terminal.innerHTML='';
   
-  // Boot lines
   lines.forEach(line=>{ 
     const div=document.createElement('div'); 
     div.textContent='> '+line; 
@@ -86,7 +83,6 @@ function renderTerminal(){
   if(showWindow){
     const win = document.createElement('div'); win.className='window';
 
-    // Heart pattern background
     if(!ageGate && !blocked){
       const pre = document.createElement('pre');
       pre.style.position='absolute'; pre.style.top='0'; pre.style.left='0'; pre.style.width='100%';
@@ -143,7 +139,6 @@ function renderTerminal(){
 
       content.appendChild(btnDiv);
 
-      // Climax after power off
       if(showClimax && !systemOn){
         const climax=document.createElement('div'); climax.style.color='#ff0000'; climax.style.marginTop='10px';
         climax.style.fontSize='14px'; climax.textContent='Climax achieved!';
@@ -166,19 +161,24 @@ function handleSystemToggle(){
       enteredSoiled = true;
       terminal.style.display = 'none';
       soiledPage.style.display = 'block';
-
-      // Play YouTube video automatically (unmuted)
-      const yt = document.getElementById('ytPlayer');
-      yt.src = "https://www.youtube.com/embed/p7wtblI5Tts?autoplay=1&controls=1";
+      playBtn.style.display = 'block'; // show button
+      ytPlayer.style.display = 'none';  // hide video until clicked
     },500);
   }
+}
+
+// Video play button
+playBtn.onclick = () => {
+  ytPlayer.src = "https://www.youtube.com/embed/p7wtblI5Tts?autoplay=1&controls=1";
+  ytPlayer.style.display = 'block';
+  playBtn.style.display = 'none';
 }
 
 // Progress auto-increment
 setInterval(()=>{
   if(!enteredSoiled && systemOn){
     if(hypno){
-      progress += hypnoDirection * 0.05; // slow realistic pulsing
+      progress += hypnoDirection * 0.05;
       if(progress>=95){ hypnoDirection=-1; progress=95; }
       if(progress<=0){ hypnoDirection=1; progress=0; }
     } else {
