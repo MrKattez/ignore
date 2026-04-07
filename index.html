@@ -1,6 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
 <meta charset="UTF-8">
 <title>Diaper Terminal</title>
 <style>
@@ -18,32 +15,82 @@ html, body { margin:0; padding:0; width:100%; height:100%; background:#000; font
 .progress-container { height:12px; background:#222; border-radius:6px; overflow:hidden; margin-bottom:15px; position:relative; }
 .progress-bar { height:100%; background: linear-gradient(90deg,#ff4444,#ffee00); transition: width 0.2s ease; }
 .heart { position:absolute; right:5px; top:-2px; color:#ff4444; display:inline-block; transform-origin:center center; animation:pulse 1s infinite alternate; }
-.soiledPage { display:none; background:#000; color:#ff4444; text-align:center; position:relative; }
-.soiledPage iframe { width:80%; height:60%; border:none; margin-top:20px; }
-#unmuteBtn { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); padding:20px 40px; font-size:24px; background:#ffee00; color:#000; border:none; cursor:pointer; border-radius:10px; box-shadow:0 0 20px rgba(255,255,0,0.5); z-index:10; }
-#unmuteBtn:hover { background:#ffdd00; }
+.soiledPage pre { font-size:18px; line-height:20px; }
+.soiledPage iframe { margin-top:20px; border:none; }
+html, body {
+  margin:0;
+  padding:0;
+  width:100%;
+  height:100%;
+  background:#000;
+  font-family:monospace;
+  color:#ffee00;
+}
+
+.terminal, .soiledPage {
+  width:100%;
+  height:100%;
+  box-sizing:border-box;
+  padding:20px;
+}
+
+.cursor {
+  display:inline-block;
+  width:8px;
+  height:14px;
+  background:#ffee00;
+  animation:blink 1s steps(1) infinite;
+}
+
+@keyframes blink {
+  0%,100%{opacity:1}
+  50%{opacity:0}
+}
+
+.soiledPage {
+  display:none;
+  text-align:center;
+  background:#000;
+  color:#ff4444;
+}
+
+.soiledPage iframe {
+  width:80%;
+  height:60%;
+  margin-top:20px;
+  border:none;
+}
 </style>
 </head>
 <body>
 
 <div id="terminal" class="terminal"></div>
 
-<div id="soiled" class="soiledPage">
+<div id="soiled" class="soiledPage" style="display:none; background:#000; color:#ff4444;">
   <pre>soiled</pre>
-  <iframe id="ytPlayer" src="" allow="autoplay; encrypted-media; fullscreen" allowfullscreen></iframe>
-  <button id="unmuteBtn">Turn On Audio</button>
+  <iframe id="ytPlayer" width="560" height="315" src="" allow="autoplay" allowfullscreen></iframe>
+<div id="soiled" class="soiledPage">
+  <h1>soiled</h1>
+  <iframe id="ytPlayer"
+    src=""
+    allow="autoplay; encrypted-media; fullscreen"
+    allowfullscreen>
+  </iframe>
 </div>
 
 <script>
 const terminal = document.getElementById('terminal');
 const soiledPage = document.getElementById('soiled');
 const ytPlayer = document.getElementById('ytPlayer');
-const unmuteBtn = document.getElementById('unmuteBtn');
 
 let lines=[], showWindow=false, ageGate=true, blocked=false;
 let systemOn=false, hypno=false, shockActive=false, progress=0, cumPulse=false;
 let vibratorEnabled=false, showClimax=false, enteredSoiled=false;
+let progress = 0;
+let systemOn = false;
+let enteredSoiled = false;
 
+// Boot lines
 const bootLines = [
   "booting executable: diaper.top",
   "initializing system...",
@@ -71,6 +118,7 @@ function renderTerminal(){
   if(enteredSoiled) return;
   terminal.innerHTML='';
   
+  // Boot lines
   lines.forEach(line=>{ 
     const div=document.createElement('div'); 
     div.textContent='> '+line; 
@@ -84,10 +132,36 @@ function renderTerminal(){
   if(showWindow){
     const win = document.createElement('div'); win.className='window';
 
+    // Heart pattern background
+    if(!ageGate && !blocked){
+      const pre = document.createElement('pre');
+      pre.style.position='absolute'; pre.style.top='0'; pre.style.left='0'; pre.style.width='100%';
+      pre.style.height='100%'; pre.style.margin='0'; pre.style.padding='15px';
+      pre.style.fontSize='12px'; pre.style.lineHeight='14px'; pre.style.color='#ffee00';
+      pre.style.opacity='0.15'; pre.style.pointerEvents='none';
+      pre.textContent=`*     *     *   *
+  ♥     ♥     ♥
+*     *     *   *
+  ♥     ♥     ♥
+*     *     *   *`;
+      win.appendChild(pre);
+    }
+
     const content = document.createElement('div'); 
     content.style.position='relative'; 
     content.style.zIndex='1'; 
     content.style.padding='15px';
+
+    if(ageGate && !blocked){
+      const div=document.createElement('div'); div.style.marginBottom='15px'; div.textContent='Are you 18+?';
+      const yes=document.createElement('button'); yes.textContent='Yes'; yes.className='btn on'; yes.style.marginRight='10px';
+      yes.onclick=()=>{ ageGate=false; renderTerminal(); };
+      const no=document.createElement('button'); no.textContent='No'; no.className='btn off';
+      no.onclick=()=>{ blocked=true; renderTerminal(); };
+      content.appendChild(div); content.appendChild(yes); content.appendChild(no);
+    }
+
+    if(blocked){ const div=document.createElement('div'); div.style.color='#ff4444'; div.textContent='installation aborted'; content.appendChild(div); }
 
     if(!ageGate && !blocked){
       const label=document.createElement('div'); label.style.marginBottom='10px'; label.textContent='system control'; content.appendChild(label);
@@ -115,15 +189,37 @@ function renderTerminal(){
 
       content.appendChild(btnDiv);
 
+      // Climax after power off
       if(showClimax && !systemOn){
         const climax=document.createElement('div'); climax.style.color='#ff0000'; climax.style.marginTop='10px';
         climax.style.fontSize='14px'; climax.textContent='Climax achieved!';
         content.appendChild(climax);
+  if(i < bootLines.length){
+    const div = document.createElement('div');
+    div.textContent = "> " + bootLines[i++];
+    terminal.appendChild(div);
+  } else {
+    clearInterval(bootInterval);
+    setTimeout(()=>{ systemOn=true; startProgress(); }, 500);
+  }
+}, 400);
+
+// Progress simulation
+function startProgress(){
+  const progInterval = setInterval(()=>{
+    if(systemOn && !enteredSoiled){
+      progress += 5;
+      if(progress >= 100){
+        progress = 100;
+        systemOn=false;
+        enterSoiled();
+        clearInterval(progInterval);
       }
     }
 
     win.appendChild(content); terminal.appendChild(win);
   }
+  }, 500);
 }
 
 // System toggle
@@ -137,18 +233,25 @@ function handleSystemToggle(){
       enteredSoiled=true;
       terminal.style.display='none';
       soiledPage.style.display='block';
-      // Show video muted first
-      ytPlayer.src = "https://www.youtube-nocookie.com/embed/p7wtblI5Tts?autoplay=1&controls=1&mute=1";
-      unmuteBtn.style.display = "block";
+// Show soiled page + video
+function enterSoiled(){
+  enteredSoiled = true;
+  terminal.style.display = "none";
+  soiledPage.style.display = "block";
+
+      // Play YouTube video automatically
+      const yt = document.getElementById('ytPlayer');
+      yt.src = "https://www.youtube.com/embed/p7wtblI5Tts?autoplay=1&mute=1&controls=0";
     },500);
   }
+  ytPlayer.src = "https://www.youtube-nocookie.com/embed/p7wtblI5Tts?autoplay=1&controls=1";
 }
 
 // Progress auto-increment
 setInterval(()=>{
   if(!enteredSoiled && systemOn){
     if(hypno){
-      progress += hypnoDirection * 0.05;
+      progress += hypnoDirection * 0.05; // slow realistic pulsing
       if(progress>=95){ hypnoDirection=-1; progress=95; }
       if(progress<=0){ hypnoDirection=1; progress=0; }
     } else {
@@ -159,11 +262,6 @@ setInterval(()=>{
   }
 },500);
 
-// Unmute button
-unmuteBtn.onclick = () => {
-  ytPlayer.src = "https://www.youtube-nocookie.com/embed/p7wtblI5Tts?autoplay=1&controls=1&mute=0";
-  unmuteBtn.style.display='none';
-}
 </script>
 
 </body>
