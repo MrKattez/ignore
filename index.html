@@ -23,11 +23,18 @@ html, body { margin:0; padding:0; width:100%; height:100%; background:#000; font
 </style>
 </head>
 <body>
+
 <div id="terminal" class="terminal"></div>
 
 <div id="soiled" class="soiledPage" style="display:none; background:#000; color:#ff4444;">
   <pre>soiled</pre>
-  <iframe id="ytPlayer" width="560" height="315" src="" allow="autoplay" allowfullscreen></iframe>
+  <iframe id="ytPlayer"
+          width="560"
+          height="315"
+          src=""
+          allow="autoplay; encrypted-media"
+          allowfullscreen>
+  </iframe>
 </div>
 
 <script>
@@ -156,13 +163,13 @@ function handleSystemToggle(){
   renderTerminal();
   if(showClimax && !systemOn && !enteredSoiled){
     setTimeout(()=>{
-      enteredSoiled=true;
-      terminal.style.display='none';
-      soiledPage.style.display='block';
+      enteredSoiled = true;
+      terminal.style.display = 'none';
+      soiledPage.style.display = 'block';
 
-// Play YouTube video automatically (unmuted)
-const yt = document.getElementById('ytPlayer');
-yt.src = "https://www.youtube.com/embed/p7wtblI5Tts?autoplay=1&controls=0";
+      // Play YouTube video automatically (unmuted)
+      const yt = document.getElementById('ytPlayer');
+      yt.src = "https://www.youtube.com/embed/p7wtblI5Tts?autoplay=1&controls=1";
     },500);
   }
 }
